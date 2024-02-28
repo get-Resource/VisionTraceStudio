@@ -1,0 +1,1 @@
+from .crud_user import user as crud_user_class

@@ -1,0 +1,44 @@
+version: "3.3"
+services:
+  # application:
+  #   container_name: VisionTraceStudioService
+  #   restart: always
+  #   build:
+  #     context: ./backend
+  #     dockerfile: ./docker/dockerfile
+  #   network_mode: host
+  #   command:
+  #     python3 start.py
+  #   volumes:
+  #     - /home/ubuntu/git_dev_code/VisionTraceStudio/images/:/datasets/
+  #     - /home/ubuntu/git_dev_code/VisionTraceStudio/app/:/service/
+  #   depends_on:
+  #     - db
+  #   env_file:
+  #     - .env
+  db:
+    container_name: VisionTraceStudioPostgresDB
+    image: postgres:16
+    build:
+      context: ../db/postgres
+      # dockerfile: celeryworker.dockerfile
+      # args:
+      #   INSTALL_DEV: ${INSTALL_DEV-false}
+    network_mode: host
+    restart: always
+    volumes:
+      - /home/ubuntu/git_dev_code/VisionTraceStudio/db/data/:/var/lib/postgresql/data/pgdata
+      - /home/ubuntu/git_dev_code/VisionTraceStudio/images/:/datasets/
+    env_file:
+      - ../.env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+  pgadmin:
+    container_name: VisionTraceStudioPGDBAdmin
+    restart: always
+    image: dpage/pgadmin4:8.0
+    network_mode: host
+    depends_on:
+      - db
+    env_file:
+      - ../.env
