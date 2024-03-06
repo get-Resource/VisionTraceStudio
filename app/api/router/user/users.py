@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app.db import crud, models, schemas
-from app.api import deps
+from src.backend_fastapi.api import deps
 from app.core.config import settings
 # from app.utils.user_validator import send_new_account_email
 

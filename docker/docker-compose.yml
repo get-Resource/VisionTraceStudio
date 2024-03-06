@@ -1,21 +1,48 @@
 version: "3.3"
 services:
-  # application:
-  #   container_name: VisionTraceStudioService
-  #   restart: always
-  #   build:
-  #     context: ./backend
-  #     dockerfile: ./docker/dockerfile
-  #   network_mode: host
-  #   command:
-  #     python3 start.py
-  #   volumes:
-  #     - /home/ubuntu/git_dev_code/VisionTraceStudio/images/:/datasets/
-  #     - /home/ubuntu/git_dev_code/VisionTraceStudio/app/:/service/
-  #   depends_on:
-  #     - db
-  #   env_file:
-  #     - .env
+  application_service:
+    container_name: VisionTraceStudioBackend
+    restart: always
+    build:
+      context: ../src
+      dockerfile: ./dockerfile
+    image: vision_trace_studio:1.0
+    network_mode: host
+    working_dir: /service/
+    command:
+      python3 run_service.py
+    volumes:
+      - /home/ubuntu/git_dev_code/VisionTraceStudio/images/:/datasets/
+      - /home/ubuntu/git_dev_code/VisionTraceStudio/src/backend_fastapi/:/service/
+    depends_on:
+      - db
+  application_frontend:
+    container_name: VisionTraceStudioFrontend
+    restart: always
+    build:
+      context: ../src
+      dockerfile: ./dockerfile
+    image: vision_trace_studio:1.0
+    network_mode: host
+    working_dir: /service/
+    command:
+      python3 main.py
+    volumes:
+      - /home/ubuntu/git_dev_code/VisionTraceStudio/images/:/datasets/
+      - /home/ubuntu/git_dev_code/VisionTraceStudio/src/frontend_nicegui/:/service/
+    depends_on:
+      - db
+  
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    command:
+        redis-server --requirepass /6tnxR98p4Xzmd/t5dhwIS8a1q1H8I+js2278cZta01SZRcyPGB4WVmy6oo7+66ubovdo9hS6WBpHR1Y --ignore-warnings ARM64-COW-BUG
+    environment:
+      - TZ=Asia/Shanghai
+    container_name: VisionTraceStudioRedis
   db:
     container_name: VisionTraceStudioPostgresDB
     image: postgres:16
@@ -30,7 +57,7 @@ services:
       - /home/ubuntu/git_dev_code/VisionTraceStudio/db/data/:/var/lib/postgresql/data/pgdata
       - /home/ubuntu/git_dev_code/VisionTraceStudio/images/:/datasets/
     env_file:
-      - ../.env
+      - ../src/.env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
   pgadmin:
@@ -41,4 +68,4 @@ services:
     depends_on:
       - db
     env_file:
-      - ../.env
+      - ../src/.env

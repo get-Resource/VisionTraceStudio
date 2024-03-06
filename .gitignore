@@ -1,0 +1,3 @@
+images
+**/*.pyc
+src/frontend_nicegui/.nicegui/*.json

@@ -1,10 +1,9 @@
-import uvicorn
 import sys
-# from app import main
-if __name__ == "__main__":
-    print(sys.argv)
-    if sys.argv[1] == "initdb":
+if __name__ in {"__main__", "__mp_main__"}:
+    if sys.argv[-1] == "initdb":
         import app.db.initial_data as init
         init.main()
     else:
-        uvicorn.run("app.application:app",port=8000,reload=True)
+        from app.nicegui.main import gui_run
+        from app.application import *
+        gui_run()

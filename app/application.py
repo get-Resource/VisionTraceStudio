@@ -5,15 +5,13 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from loguru import logger
 from starlette.middleware.cors import CORSMiddleware
-
+from nicegui import app
 from app.db.initial_data import init as initial_data
 from .api.router import api_router
 from .core.config import settings
 from fastapi import Depends, HTTPException, status
 
-app = FastAPI(
-    title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
-)
+
 
 @app.exception_handler(Exception)
 @app.exception_handler(HTTPException)
@@ -59,4 +57,4 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
-initial_data()
+

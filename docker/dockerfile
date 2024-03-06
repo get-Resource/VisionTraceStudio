@@ -1,0 +1,8 @@
+FROM python:3.12
+RUN mkdir /service
+WORKDIR /service 
+COPY ./requirements.txt /service
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+CMD ["python3", "main.py"]
+
